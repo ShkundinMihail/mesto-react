@@ -1,7 +1,7 @@
 import React from 'react';
 import closeIcon from '../images/Close-Icon.svg'
 
-export function PopupWithImage(props) {
+export function ImagePopup(props) {
     const test = props.popupOpen === true;
     if (test) {
         return (
@@ -16,8 +16,8 @@ export function PopupWithImage(props) {
                             src={closeIcon}
                             alt="Х" /></button>
                     <img className="popup__open-photo"
-                        src={props.data.src} alt={props.data.alt} />
-                    <h2 className="popup__open-title">{props.data.title}</h2>
+                        src={props.card.src} alt={props.card.alt} />
+                    <h2 className="popup__open-title">{props.card.title}</h2>
                 </div>
             </div>
             </>

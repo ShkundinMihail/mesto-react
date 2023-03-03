@@ -2,11 +2,11 @@ import React from 'react';
 import { Header } from './components/Header.js';
 import { Main } from './components/Main.js';
 import { Footer } from './components/Footer.js';
-import { PopupWithImage } from './components/PopupWithImage.js';
+import { ImagePopup } from './components/ImagePopup.js';
 import { PopupWithForm } from './components/PopupWithForm.js';
 
 function App() {
-  const [viewCard, setViewCard] = React.useState();
+  const [selectedCard, setSelectedCard] = React.useState();
   const [openPhoto, setOpenPhoto] = React.useState(false);
   const [openPopupAvatar, setOpenPopupAvatar] = React.useState(false);
   const [cardDelete, setCardDelete] = React.useState(false);
@@ -30,12 +30,12 @@ function App() {
   };
 
   function openCard(data) {
-    setViewCard(data);
+    setSelectedCard(data);
     setOpenPhoto(true);
   };
 
-  const closePopup = () => {
-    setViewCard(null);
+  const closeAllPopups = () => {
+    setSelectedCard(null);
     setOpenPhoto(false);
     setOpenPopupAvatar(false);
     setCardDelete(false);
@@ -53,11 +53,11 @@ function App() {
         onClickAddPhoto={addPhoto}
       />
       <Footer />
-      <PopupWithImage popupOpen={openPhoto} data={viewCard} onClose={closePopup} />
+      <ImagePopup popupOpen={openPhoto} card={selectedCard} onClose={closeAllPopups}/>
 
       <PopupWithForm 
         open={openPopupAvatar} 
-        onClose={closePopup} 
+        onClose={closeAllPopups} 
         title={'Обновить аватар'} 
         submit={'Сохранить'}
         dataPopup={
@@ -75,7 +75,7 @@ function App() {
     }/>
       <PopupWithForm
        open={addCard} 
-       onClose={closePopup} 
+       onClose={closeAllPopups} 
        title={'Новое место'}
        submit={'Создать'}
        dataPopup= {
@@ -105,7 +105,7 @@ function App() {
       />
       <PopupWithForm 
         open={userInfo} 
-        onClose={closePopup}
+        onClose={closeAllPopups}
         title={'Редактировать профиль'} 
         submit={'Сохранить'}
         dataPopup={
@@ -141,7 +141,7 @@ function App() {
         />
       <PopupWithForm 
         open={cardDelete} 
-        onClose={closePopup} 
+        onClose={closeAllPopups} 
         title={'Вы уверены?'}
         submit={'Да'}
       />
