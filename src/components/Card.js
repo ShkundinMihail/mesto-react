@@ -8,7 +8,6 @@ export function Card({ id, ...props }) {
     props.onClickCard(props.data);
   }
   return (
-    <>
       <article className="element" lang="en ru" id={props.id}>
         <img className="element__photo" id="photo"
           src={props.data.src} onClick={handleClickCard}
@@ -21,6 +20,5 @@ export function Card({ id, ...props }) {
         <button className="element__like" type="button" name="like"></button>
         <span className="element__number-likes">{props.data.likes.length}</span>
       </article>
-    </>
   );
 }

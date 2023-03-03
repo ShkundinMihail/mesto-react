@@ -12,7 +12,7 @@ class Api {
         }
     };
     //данные о пользователе с сервера////////////////////////
-    userInfoFromServer() {
+    getUserInformation() {
         return fetch(`${this._baseUrl}/users/me`, {
             method: 'GET',
             headers: this._headers,
@@ -22,7 +22,7 @@ class Api {
     //аватар пользователя с сервера//////////////////////////
 
     //карточки с сервера/////////////////////////////////////
-    cardsFromServer() {
+    getCards() {
         return fetch(`${this._baseUrl}/cards`, {
             method: 'GET',
             headers: this._headers,
@@ -89,10 +89,11 @@ class Api {
             .then(res => this._getResponse(res));
     };
 }
-export const api = new Api({
+  export const api = new Api({
     baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-59',
     headers: {
-      authorization: '22484fcb-aa03-43f2-ad62-a17b1e9a91a9',
-      'Content-Type': 'application/json',
+        authorization: '22484fcb-aa03-43f2-ad62-a17b1e9a91a9',
+        'Content-Type': 'application/json',
     }
-  });
+  }
+);

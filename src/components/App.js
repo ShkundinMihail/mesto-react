@@ -1,66 +1,67 @@
 import React from 'react';
-import { Header } from './components/Header.js';
-import { Main } from './components/Main.js';
-import { Footer } from './components/Footer.js';
-import { ImagePopup } from './components/ImagePopup.js';
-import { PopupWithForm } from './components/PopupWithForm.js';
+import { Header } from './Header.js';
+import { Main } from './Main.js';
+import { Footer } from './Footer.js';
+import { ImagePopup } from './ImagePopup.js';
+import { PopupWithForm } from './PopupWithForm.js';
 
 function App() {
-  const [selectedCard, setSelectedCard] = React.useState();
-  const [openPhoto, setOpenPhoto] = React.useState(false);
-  const [openPopupAvatar, setOpenPopupAvatar] = React.useState(false);
-  const [cardDelete, setCardDelete] = React.useState(false);
-  const [userInfo, setUserInfo] = React.useState(false);
-  const [addCard, setAddCard] = React.useState(false);
+  const [selectedCard, setSelectedCard] = React.useState('');
+  const [photoOpen, setPhotoOpen] = React.useState(false);
+  const [popupAvatarOpen, setPopupAvatarOpen] = React.useState(false);
+  const [isCardDeletePopupOpen, setIsCardDeletePopupOpen] = React.useState(false);
+  const [isProfilePopupOpen, setIsProfilePopupOpen] = React.useState(false);
+  const [cardAdd, setCardAdd] = React.useState(false);
 
-  const addPhoto = () => {
-    setAddCard(true);
+  const handleOpenAddCardPopup = () => {
+    setCardAdd(true);
   };
 
-  const userInfoEdit = () => {
-    setUserInfo(true);
+  const handleOpenEditProfilePopup = () => {
+    setIsProfilePopupOpen(true);
   };
 
-  const popupAvatar = () => {
-    setOpenPopupAvatar(true);
+  const handleOpenEditAvatarPopup = () => {
+    setPopupAvatarOpen(true);
   };
 
-  function deleteCard() {
-    setCardDelete(true);
+  function handleOpenCardDeletePopup() {
+    setIsCardDeletePopupOpen(true);
   };
 
   function openCard(data) {
     setSelectedCard(data);
-    setOpenPhoto(true);
+    setPhotoOpen(true);
   };
 
   const closeAllPopups = () => {
-    setSelectedCard(null);
-    setOpenPhoto(false);
-    setOpenPopupAvatar(false);
-    setCardDelete(false);
-    setUserInfo(false);
-    setAddCard(false);
+    setSelectedCard('');
+    setPhotoOpen(false);
+    setPopupAvatarOpen(false);
+    setIsCardDeletePopupOpen(false);
+    setIsProfilePopupOpen(false);
+    setCardAdd(false);
   };
+
   return (
     <>
       <Header />
       <Main
-        onClickAvatar={popupAvatar}
+        onClickAvatar={handleOpenEditAvatarPopup}
         onClickCard={openCard}
-        deleteCard={deleteCard}
-        onClickUserInfo={userInfoEdit}
-        onClickAddPhoto={addPhoto}
+        deleteCard={handleOpenCardDeletePopup}
+        onClickUserInfo={handleOpenEditProfilePopup}
+        onClickAddPhoto={handleOpenAddCardPopup}
       />
       <Footer />
-      <ImagePopup popupOpen={openPhoto} card={selectedCard} onClose={closeAllPopups}/>
+      <ImagePopup popupOpen={photoOpen} title={selectedCard.title} alt={selectedCard.alt} src={selectedCard.src}  onClose={closeAllPopups}/>
 
       <PopupWithForm 
-        open={openPopupAvatar} 
+        open={popupAvatarOpen} 
         onClose={closeAllPopups} 
         title={'Обновить аватар'} 
         submit={'Сохранить'}
-        dataPopup={
+        children={
      <>
         <input 
           className="popup__input-style popup__input-style_edit_work"
@@ -74,11 +75,11 @@ function App() {
      </>
     }/>
       <PopupWithForm
-       open={addCard} 
+       open={cardAdd} 
        onClose={closeAllPopups} 
        title={'Новое место'}
        submit={'Создать'}
-       dataPopup= {
+       children= {
         <>
          <input
                  className="popup__input-style popup__input-style_edit_name"
@@ -104,11 +105,11 @@ function App() {
         </>}
       />
       <PopupWithForm 
-        open={userInfo} 
+        open={isProfilePopupOpen} 
         onClose={closeAllPopups}
         title={'Редактировать профиль'} 
         submit={'Сохранить'}
-        dataPopup={
+        children={
           <>
             <input
                 className="popup__input-style popup__input-style_edit_name"
@@ -140,7 +141,7 @@ function App() {
         }
         />
       <PopupWithForm 
-        open={cardDelete} 
+        open={isCardDeletePopupOpen} 
         onClose={closeAllPopups} 
         title={'Вы уверены?'}
         submit={'Да'}

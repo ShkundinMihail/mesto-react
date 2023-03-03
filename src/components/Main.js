@@ -2,8 +2,8 @@ import React from 'react';
 import { api } from "../utils/Api.js";
 import { Card } from '../components/Card.js'
 import egor from '../images/egor.jpg';
-import editIcon from '../images/edit-icon.svg';
-import addPhotoIcon from '../images/addPhoto-icon.svg';
+import iconEdit from '../images/edit-icon.svg';
+import photoIcon from '../images/addPhoto-icon.svg';
 
 export function Main(props) {
     const [cards, setCards] = React.useState([]);
@@ -11,7 +11,7 @@ export function Main(props) {
     const [userWork, setUserWork] = React.useState('Удобряю землю');
     const [userAvatar, setUserAvatar] = React.useState(egor);
     React.useEffect(() => {
-        Promise.all([api.cardsFromServer(), api.userInfoFromServer()])
+        Promise.all([api.getCards(), api.getUserInformation()])
             .then(([dataCard, dataUser]) => {
                 setCards(
                     dataCard.map((item) => (
@@ -27,7 +27,10 @@ export function Main(props) {
                 setUserName(dataUser.name);
                 setUserWork(dataUser.about);
                 setUserAvatar(dataUser.avatar);
-            });
+            })
+            .catch((err) => {
+                console.log(`Ошибка данных: ${err}`);
+              });
     }, []);
     return (
         <main className="content">
@@ -42,7 +45,7 @@ export function Main(props) {
                             <button type="button" onClick={props.onClickUserInfo}
                                 className="author__edit"><img
                                     className="author__edit-icon"
-                                    src={editIcon}
+                                    src={iconEdit}
                                     alt="изменить" />
                             </button>
                         </div>
@@ -53,7 +56,7 @@ export function Main(props) {
                 <button className="profile__add-photo" type="button"
                     onClick = {props.onClickAddPhoto}><img
                         className="profile__add-photo-icon"
-                        src={addPhotoIcon}
+                        src={photoIcon}
                         alt="добавить фото" /></button>
             </section>
             <section className="elements">
