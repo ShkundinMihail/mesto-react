@@ -2,11 +2,10 @@ import React from 'react';
 import closeIcon from '../images/Close-Icon.svg'
 
 export function ImagePopup({ title, src, alt, popupOpen, onClose }) {
-    const test = popupOpen === true;
 
     return (
         <>
-            <div className={`popup popup_photo ${test ? 'popup_opened' : ''}`}>
+            <div className={`popup popup_photo ${popupOpen ? 'popup_opened' : ''}`}>
                 <div className="popup__content-photo">
                     <button className="popup__close"
                         onClick={onClose}

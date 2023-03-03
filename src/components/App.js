@@ -6,15 +6,15 @@ import { ImagePopup } from './ImagePopup.js';
 import { PopupWithForm } from './PopupWithForm.js';
 
 function App() {
-  const [selectedCard, setSelectedCard] = React.useState('');
+  const [selectedCard, setSelectedCard] = React.useState({});
   const [photoOpen, setPhotoOpen] = React.useState(false);
   const [popupAvatarOpen, setPopupAvatarOpen] = React.useState(false);
   const [isCardDeletePopupOpen, setIsCardDeletePopupOpen] = React.useState(false);
   const [isProfilePopupOpen, setIsProfilePopupOpen] = React.useState(false);
-  const [cardAdd, setCardAdd] = React.useState(false);
+  const [isAddCardPopupOpened, setIsAddCardPopupOpened] = React.useState(false);
 
   const handleOpenAddCardPopup = () => {
-    setCardAdd(true);
+    setIsAddCardPopupOpened(true);
   };
 
   const handleOpenEditProfilePopup = () => {
@@ -40,7 +40,7 @@ function App() {
     setPopupAvatarOpen(false);
     setIsCardDeletePopupOpen(false);
     setIsProfilePopupOpen(false);
-    setCardAdd(false);
+    setIsAddCardPopupOpened(false);
   };
 
   return (
@@ -75,7 +75,7 @@ function App() {
      </>
     }/>
       <PopupWithForm
-       open={cardAdd} 
+       open={isAddCardPopupOpened} 
        onClose={closeAllPopups} 
        title={'Новое место'}
        submit={'Создать'}
