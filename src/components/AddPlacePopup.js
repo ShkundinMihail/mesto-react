@@ -9,10 +9,12 @@ export function AddPlacePopup({ open, close, submitCard }) {
         e.preventDefault()
         submitCard(titlePlace.current.value, linkPlace.current.value)
     };
-    if (open) {
-        titlePlace.current.value = ''
-        linkPlace.current.value = ''
-    }
+    React.useEffect(() => {
+        if (open) {
+            titlePlace.current.value = ''
+            linkPlace.current.value = ''
+        }
+    })
     return (
         <PopupWithForm
             open={open}

@@ -7,11 +7,12 @@ export function EditAvatarPopup({ saveLinkOnServer, open, close }) {
         e.preventDefault();
         saveLinkOnServer(linkToAvatar.current.value);
     }
-
-    if (open) {
-        linkToAvatar.current.value = ''//кароч , нас этому не учили(как правильно использовать useEffect в данном случае). Но форма теперь сбрасывается при открытии
+    React.useEffect(() => {
+        if (open) {
+            linkToAvatar.current.value = ''
+        }
     }
-
+    )
     return (
         <PopupWithForm
             open={open}
