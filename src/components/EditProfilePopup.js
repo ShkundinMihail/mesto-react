@@ -24,7 +24,6 @@ export function EditProfilePopup({ open, close, saveTextOnServer }) {
     const submitProfile = (e) => {
         e.preventDefault();
         saveTextOnServer({ name: userName, about: userWork })
-        close()
     };
 
     return (

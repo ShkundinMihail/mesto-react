@@ -1,13 +1,15 @@
 import React from "react";
 import { PopupWithForm } from "./PopupWithForm";
 
-export function EditAvatarPopup({ toResetTheForm, saveLinkOnServer, open, close }) {
+export function EditAvatarPopup({ saveLinkOnServer, open, close }) {
     const linkToAvatar = React.useRef();
     const submitAvatar = (e) => {
         e.preventDefault();
         saveLinkOnServer(linkToAvatar.current.value);
-        close()
-        e.target.reset()// на просторах "Етих Антарнетов" нашел способ сбросить форму. Не знаю правильно ли это , но работает  :)
+    }
+
+    if (open) {
+        linkToAvatar.current.value = ''//кароч , нас этому не учили(как правильно использовать useEffect в данном случае). Но форма теперь сбрасывается при открытии
     }
 
     return (

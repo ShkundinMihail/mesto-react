@@ -45,21 +45,6 @@ function App() {
       })
   }, []);
 
-  const sendAvatarToServer = (link) => {
-    api.changeAvatar(link)
-      .then(link => {
-        setCurrentUser(link)
-      })
-      .catch(err => { console.log(`Ошибка. Аватар не обновлён 🤔: ${err}`) })
-  }
-  const sendProfileToServer = (textData) => {
-    api.changeUserInfo(textData)
-      .then(text => {
-        setCurrentUser(text)
-      })
-      .catch(err => { console.log(`Ошибка. Информация о пользователе не обновлена 😟: ${err}`) })
-  }
-
   const handleOpenAddCardPopup = () => {
     setIsAddCardPopupOpened(true);
   };
@@ -91,7 +76,7 @@ function App() {
   };
   function handleCardDelete(cardId) {
     api.deleteCard(cardId)
-      .then(card => {
+      .then(() => {
         setCards((state) => state.filter((c) => c._id !== cardId))
       })
       .catch(err => { console.log(`Сбой. Не удалось удалить карточку...🥺${err}`) })
@@ -109,8 +94,25 @@ function App() {
     api.downloadNewCard({ title, link })
       .then(newCard => {
         setCards([newCard, ...cards]);
+        closeAllPopups()
       })
       .catch(err => { console.log(`Фиаско. Не удалось добавить карточку 🤪 ${err}`) })
+  }
+  const sendAvatarToServer = (link) => {
+    api.changeAvatar(link)
+      .then(link => {
+        setCurrentUser(link)
+        closeAllPopups()
+      })
+      .catch(err => { console.log(`Ошибка. Аватар не обновлён 🤔: ${err}`) })
+  }
+  const sendProfileToServer = (textData) => {
+    api.changeUserInfo(textData)
+      .then(text => {
+        setCurrentUser(text)
+        closeAllPopups()
+      })
+      .catch(err => { console.log(`Ошибка. Информация о пользователе не обновлена 😟: ${err}`) })
   }
 
   return (
@@ -129,7 +131,7 @@ function App() {
         />
         <Footer />
         <ImagePopup popupOpen={photoOpen} title={selectedCard.title} alt={selectedCard.alt} src={selectedCard.src} onClose={closeAllPopups} />
-        <EditAvatarPopup open={popupAvatarOpen} close={closeAllPopups} saveLinkOnServer={sendAvatarToServer} toResetTheForm={popupAvatarOpen} />
+        <EditAvatarPopup open={popupAvatarOpen} close={closeAllPopups} saveLinkOnServer={sendAvatarToServer} />
         <EditProfilePopup open={isProfilePopupOpen} close={closeAllPopups} saveTextOnServer={sendProfileToServer} />
         <AddPlacePopup open={isAddCardPopupOpened} close={closeAllPopups} submitCard={handleAddPlaceSubmit} />
 

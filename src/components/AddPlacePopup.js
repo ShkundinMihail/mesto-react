@@ -8,9 +8,11 @@ export function AddPlacePopup({ open, close, submitCard }) {
     const handleSubmit = (e) => {
         e.preventDefault()
         submitCard(titlePlace.current.value, linkPlace.current.value)
-        close()
-        e.target.reset()
     };
+    if (open) {
+        titlePlace.current.value = ''
+        linkPlace.current.value = ''
+    }
     return (
         <PopupWithForm
             open={open}

@@ -36,7 +36,14 @@ export function Main(props) {
                         alt="добавить фото" /></button>
             </section>
             <section className="elements">
-                {props.cards.map(item => (<Card key={item._id} onClickCard={props.onClickCard} data={item} deleteCard={props.deleteCard} onCardLike={props.onClickLike} />))}
+                {props.cards.map(item => (
+                    <Card
+                        key={item._id}
+                        onClickCard={props.onClickCard}
+                        data={item}
+                        deleteCard={props.deleteCard}
+                        onCardLike={props.onClickLike}
+                    />))}
             </section>
         </main>
     )
