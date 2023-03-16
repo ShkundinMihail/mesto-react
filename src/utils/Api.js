@@ -36,7 +36,7 @@ class Api {
             headers: this._headers,
             body: JSON.stringify({
                 name: value.name,
-                about: value.work
+                about: value.about
             })
         })
             .then(res => this._getResponse(res));
@@ -59,7 +59,7 @@ class Api {
             method: 'PATCH',
             headers: this._headers,
             body: JSON.stringify({
-                avatar: value.avatar
+                avatar: value
             })
         })
             .then(res => this._getResponse(res));
@@ -88,12 +88,20 @@ class Api {
         })
             .then(res => this._getResponse(res));
     };
+    //если нет лайка ставим, иначе удаляем////////////////////////
+    changeLikeCardStatus(cardId, isLiked) {
+        if (isLiked) {
+            return this.putLikeEl(cardId);
+        } else {
+            return this.deleteLikeEL(cardId);
+        }
+    };
 }
-  export const api = new Api({
+export const api = new Api({
     baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-59',
     headers: {
         authorization: '22484fcb-aa03-43f2-ad62-a17b1e9a91a9',
         'Content-Type': 'application/json',
     }
-  }
+}
 );

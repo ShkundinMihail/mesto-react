@@ -1,17 +1,64 @@
 import React from 'react';
 import { Header } from './Header.js';
+import { api } from "../utils/Api.js";
 import { Main } from './Main.js';
 import { Footer } from './Footer.js';
 import { ImagePopup } from './ImagePopup.js';
 import { PopupWithForm } from './PopupWithForm.js';
+import { EditAvatarPopup } from './EditAvatarPopup.js';
+import { EditProfilePopup } from './EditProfilePopup.js';
+import { AddPlacePopup } from './AddPlacePopup.js'
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 function App() {
+  const [cards, setCards] = React.useState([]);
   const [selectedCard, setSelectedCard] = React.useState({});
   const [photoOpen, setPhotoOpen] = React.useState(false);
   const [popupAvatarOpen, setPopupAvatarOpen] = React.useState(false);
   const [isCardDeletePopupOpen, setIsCardDeletePopupOpen] = React.useState(false);
   const [isProfilePopupOpen, setIsProfilePopupOpen] = React.useState(false);
   const [isAddCardPopupOpened, setIsAddCardPopupOpened] = React.useState(false);
+  const [currentUser, setCurrentUser] = React.useState({
+    'name': '',
+    'about': '',
+    'avatar': '',
+    '_id': '',
+    'cohort': ''
+  });
+  React.useEffect(() => {
+    api.getCards()
+      .then((dataCard) => {
+        setCards(dataCard);
+      })
+      .catch((err) => {
+        console.log(`Ошибка. Не удалось загрузить карточки 😰: ${err}`);
+      });
+  }, []);
+
+  React.useEffect(() => {
+    api.getUserInformation()
+      .then(data => {
+        setCurrentUser(data)
+      })
+      .catch((err) => {
+        console.log(`Ошибка данных😩: ${err}`);
+      })
+  }, []);
+
+  const sendAvatarToServer = (link) => {
+    api.changeAvatar(link)
+      .then(link => {
+        setCurrentUser(link)
+      })
+      .catch(err => { console.log(`Ошибка. Аватар не обновлён 🤔: ${err}`) })
+  }
+  const sendProfileToServer = (textData) => {
+    api.changeUserInfo(textData)
+      .then(text => {
+        setCurrentUser(text)
+      })
+      .catch(err => { console.log(`Ошибка. Информация о пользователе не обновлена 😟: ${err}`) })
+  }
 
   const handleOpenAddCardPopup = () => {
     setIsAddCardPopupOpened(true);
@@ -25,9 +72,9 @@ function App() {
     setPopupAvatarOpen(true);
   };
 
-  function handleOpenCardDeletePopup() {
-    setIsCardDeletePopupOpen(true);
-  };
+  // function handleOpenCardDeletePopup() {
+  //   setIsCardDeletePopupOpen(true);
+  // };
 
   function openCard(data) {
     setSelectedCard(data);
@@ -42,110 +89,57 @@ function App() {
     setIsProfilePopupOpen(false);
     setIsAddCardPopupOpened(false);
   };
+  function handleCardDelete(cardId) {
+    api.deleteCard(cardId)
+      .then(card => {
+        setCards((state) => state.filter((c) => c._id !== cardId))
+      })
+      .catch(err => { console.log(`Сбой. Не удалось удалить карточку...🥺${err}`) })
+  };
+  const handleCardLike = (card) => {
+    const isLiked = card.likes.some(i => i._id === currentUser._id);
+
+    api.changeLikeCardStatus(card._id, !isLiked)
+      .then((newCard) => {
+        setCards((state) => state.map((c) => c._id === card._id ? newCard : c))
+      })
+      .catch(err => { console.log(`Это провал... Не удалось поставить(удалить) лайк... 🥵${err}`) });
+  }
+  const handleAddPlaceSubmit = (title, link) => {
+    api.downloadNewCard({ title, link })
+      .then(newCard => {
+        setCards([newCard, ...cards]);
+      })
+      .catch(err => { console.log(`Фиаско. Не удалось добавить карточку 🤪 ${err}`) })
+  }
 
   return (
     <>
-      <Header />
-      <Main
-        onClickAvatar={handleOpenEditAvatarPopup}
-        onClickCard={openCard}
-        deleteCard={handleOpenCardDeletePopup}
-        onClickUserInfo={handleOpenEditProfilePopup}
-        onClickAddPhoto={handleOpenAddCardPopup}
-      />
-      <Footer />
-      <ImagePopup popupOpen={photoOpen} title={selectedCard.title} alt={selectedCard.alt} src={selectedCard.src}  onClose={closeAllPopups}/>
-
-      <PopupWithForm 
-        open={popupAvatarOpen} 
-        onClose={closeAllPopups} 
-        title={'Обновить аватар'} 
-        submit={'Сохранить'}
-        children={
-     <>
-        <input 
-          className="popup__input-style popup__input-style_edit_work"
-          id="linkAvatar"
-          required
-          placeholder="Ссылка на аватар"
-          type="url"/>
-        <span 
-          className="popup__form-error popup__form-error_from-avatar" 
-           id="linkAvatar-error"></span>
-     </>
-    }/>
-      <PopupWithForm
-       open={isAddCardPopupOpened} 
-       onClose={closeAllPopups} 
-       title={'Новое место'}
-       submit={'Создать'}
-       children= {
-        <>
-         <input
-                 className="popup__input-style popup__input-style_edit_name"
-                 id="titlePhoto"
-                 required
-                 placeholder="Название"
-                 type="text"
-                 minLength="2"
-                 maxLength="30"
-                 data-valid-value="в поле «Название» должно быть от 2 до
-                 30 символов"/>
-             <span className="popup__form-error popup__form-error_position"
-                 id="titlePhoto-error"></span>
-             <input 
-                 className="popup__input-style popup__input-style_edit_work"
-                 id="linkPhoto"
-                 minLength="2"
-                 maxLength="400"
-                 required
-                 placeholder="Ссылка на картинку"
-                 type="url"/>
-             <span className="popup__form-error" id="linkPhoto-error"></span>
-        </>}
-      />
-      <PopupWithForm 
-        open={isProfilePopupOpen} 
-        onClose={closeAllPopups}
-        title={'Редактировать профиль'} 
-        submit={'Сохранить'}
-        children={
-          <>
-            <input
-                className="popup__input-style popup__input-style_edit_name"
-                id="name"
-                placeholder="Имя"
-                type="text"
-                minLength="2"
-                maxLength="40"
-                required
-                data-valid-value="в поле «Имя» должно быть от 2 до
-                40
-                символов"/>
-            <span 
-                className="popup__form-error popup__form-error_position" 
-                id="name-error"></span>
-            <input
-                className="popup__input-style popup__input-style_edit_work"
-                id="work"
-                placeholder="О себе"
-                type="text"
-                minLength="2"
-                maxLength="200"
-                required
-                data-valid-value="в поле «О себе» должно быть от 2 до 200 символов"/>
-            <span 
-                className="popup__form-error" 
-                id="work-error"></span>
-          </>
-        }
+      <CurrentUserContext.Provider value={currentUser}>
+        <Header />
+        <Main
+          onClickAvatar={handleOpenEditAvatarPopup}
+          onClickCard={openCard}
+          //deleteCard={handleOpenCardDeletePopup}
+          onClickUserInfo={handleOpenEditProfilePopup}
+          onClickAddPhoto={handleOpenAddCardPopup}
+          deleteCard={handleCardDelete}
+          onClickLike={handleCardLike}
+          cards={cards}
         />
-      <PopupWithForm 
-        open={isCardDeletePopupOpen} 
-        onClose={closeAllPopups} 
-        title={'Вы уверены?'}
-        submit={'Да'}
-      />
+        <Footer />
+        <ImagePopup popupOpen={photoOpen} title={selectedCard.title} alt={selectedCard.alt} src={selectedCard.src} onClose={closeAllPopups} />
+        <EditAvatarPopup open={popupAvatarOpen} close={closeAllPopups} saveLinkOnServer={sendAvatarToServer} toResetTheForm={popupAvatarOpen} />
+        <EditProfilePopup open={isProfilePopupOpen} close={closeAllPopups} saveTextOnServer={sendProfileToServer} />
+        <AddPlacePopup open={isAddCardPopupOpened} close={closeAllPopups} submitCard={handleAddPlaceSubmit} />
+
+        <PopupWithForm
+          open={isCardDeletePopupOpen}
+          onClose={closeAllPopups}
+          title={'Вы уверены?'}
+          submit={'Да'}
+        />
+      </CurrentUserContext.Provider>
     </>
   )
 }

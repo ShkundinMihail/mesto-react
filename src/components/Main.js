@@ -1,47 +1,23 @@
 import React from 'react';
 import { api } from "../utils/Api.js";
 import { Card } from '../components/Card.js'
-import egor from '../images/egor.jpg';
 import iconEdit from '../images/edit-icon.svg';
 import photoIcon from '../images/addPhoto-icon.svg';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 export function Main(props) {
-    const [cards, setCards] = React.useState([]);
-    const [userName, setUserName] = React.useState('Егор');
-    const [userWork, setUserWork] = React.useState('Удобряю землю');
-    const [userAvatar, setUserAvatar] = React.useState(egor);
-    React.useEffect(() => {
-        Promise.all([api.getCards(), api.getUserInformation()])
-            .then(([dataCard, dataUser]) => {
-                setCards(
-                    dataCard.map((item) => (
-                        {
-                            id: item._id,
-                            src: item.link,
-                            title: item.name,
-                            alt: item.name,
-                            likes: item.likes
-                        }
-                    ))
-                );
-                setUserName(dataUser.name);
-                setUserWork(dataUser.about);
-                setUserAvatar(dataUser.avatar);
-            })
-            .catch((err) => {
-                console.log(`Ошибка данных: ${err}`);
-              });
-    }, []);
+    const context = React.useContext(CurrentUserContext)
+
     return (
         <main className="content">
             <section className="profile">
                 <div className="author">
-                    <img className="author__avatar" src={userAvatar}
+                    <img className="author__avatar" src={context.avatar}
                         alt="Он живет на дне" />
                     <button className="author__avatar-button" onClick={props.onClickAvatar}></button>
                     <div className="author__info-zone">
                         <div className="author__title-zone">
-                            <h1 className="author__name">{userName}</h1>
+                            <h1 className="author__name">{context.name}</h1>
                             <button type="button" onClick={props.onClickUserInfo}
                                 className="author__edit"><img
                                     className="author__edit-icon"
@@ -49,19 +25,19 @@ export function Main(props) {
                                     alt="изменить" />
                             </button>
                         </div>
-                        <p className="author__work">{userWork}</p>
+                        <p className="author__work">{context.about}</p>
                     </div>
 
                 </div>
                 <button className="profile__add-photo" type="button"
-                    onClick = {props.onClickAddPhoto}><img
+                    onClick={props.onClickAddPhoto}><img
                         className="profile__add-photo-icon"
                         src={photoIcon}
                         alt="добавить фото" /></button>
             </section>
             <section className="elements">
-                {cards.map((item) => (<Card key={item.id} onClickCard={props.onClickCard} data={item} deleteCard={props.deleteCard} />))}
+                {props.cards.map(item => (<Card key={item._id} onClickCard={props.onClickCard} data={item} deleteCard={props.deleteCard} onCardLike={props.onClickLike} />))}
             </section>
         </main>
     )
-}
+};
