@@ -64,6 +64,7 @@ function App() {
   function openCard(data) {
     setSelectedCard(data);
     setPhotoOpen(true);
+
   };
 
   const closeAllPopups = () => {
@@ -130,7 +131,7 @@ function App() {
           cards={cards}
         />
         <Footer />
-        <ImagePopup popupOpen={photoOpen} title={selectedCard.title} alt={selectedCard.alt} src={selectedCard.src} onClose={closeAllPopups} />
+        <ImagePopup popupOpen={photoOpen} data={selectedCard} onClose={closeAllPopups} />
         <EditAvatarPopup open={popupAvatarOpen} close={closeAllPopups} saveLinkOnServer={sendAvatarToServer} />
         <EditProfilePopup open={isProfilePopupOpen} close={closeAllPopups} saveTextOnServer={sendProfileToServer} />
         <AddPlacePopup open={isAddCardPopupOpened} close={closeAllPopups} submitCard={handleAddPlaceSubmit} />

@@ -1,7 +1,7 @@
 .popup_opened {
-    z-index: 33;
     top: 0;
     left: 0;
+    z-index: 3;
     visibility: visible;
     transform: scale(1);
     opacity: 1;
