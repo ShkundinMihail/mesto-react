@@ -14,7 +14,8 @@ export function AddPlacePopup({ open, close, submitCard }) {
             titlePlace.current.value = ''
             linkPlace.current.value = ''
         }
-    })
+    }, [titlePlace.current.value = '',
+        linkPlace.current.value = ''])
     return (
         <PopupWithForm
             open={open}

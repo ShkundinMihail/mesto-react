@@ -7,12 +7,12 @@ export function EditAvatarPopup({ saveLinkOnServer, open, close }) {
         e.preventDefault();
         saveLinkOnServer(linkToAvatar.current.value);
     }
+
     React.useEffect(() => {
         if (open) {
             linkToAvatar.current.value = ''
         }
-    }
-    )
+    }, [linkToAvatar.current.value = ''])
     return (
         <PopupWithForm
             open={open}
