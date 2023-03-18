@@ -1,6 +1,6 @@
 import React from 'react';
 import { Header } from './Header.js';
-import  api  from "../utils/api.js";
+import api from "../utils/api.js";
 import { Main } from './Main.js';
 import { Footer } from './Footer.js';
 import { ImagePopup } from './ImagePopup.js';
@@ -25,7 +25,6 @@ function App() {
     '_id': '',
     'cohort': ''
   });
-  
   React.useEffect(() => {
     api.getCards()
       .then((dataCard) => {
