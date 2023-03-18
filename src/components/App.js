@@ -25,6 +25,7 @@ function App() {
     '_id': '',
     'cohort': ''
   });
+  
   React.useEffect(() => {
     api.getCards()
       .then((dataCard) => {
