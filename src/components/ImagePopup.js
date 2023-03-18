@@ -2,6 +2,7 @@ import React from 'react';
 import closeIcon from '../images/Close-Icon.svg'
 
 export function ImagePopup({ popupOpen, onClose, data }) {
+
     return (
         <>
             <div className={`popup popup_photo ${popupOpen ? 'popup_opened' : ''}`}>
@@ -14,8 +15,8 @@ export function ImagePopup({ popupOpen, onClose, data }) {
                             src={closeIcon}
                             alt="Х" /></button>
                     <img className="popup__open-photo"
-                        src={data.link} alt={data.alt} />
-                    <h2 className="popup__open-title">{data.name}</h2>
+                        src={popupOpen ? data.link : ''} alt={popupOpen ? data.alt : ''} />
+                    <h2 className="popup__open-title">{popupOpen ? data.name : ''}</h2>
                 </div>
             </div>
         </>

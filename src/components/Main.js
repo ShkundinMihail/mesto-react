@@ -1,5 +1,4 @@
 import React from 'react';
-import { api } from "../utils/Api.js";
 import { Card } from '../components/Card.js'
 import iconEdit from '../images/edit-icon.svg';
 import photoIcon from '../images/addPhoto-icon.svg';
