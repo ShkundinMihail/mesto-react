@@ -1,0 +1,16 @@
+.header__user-section {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+@media screen and (max-width:930px) {
+    .header__user-section {}
+}
+
+@media screen and (max-width:620px) {
+    .header__user-section {
+        flex-direction: column;
+    }
+}
