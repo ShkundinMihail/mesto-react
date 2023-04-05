@@ -18,6 +18,7 @@ import { NotFoundPage } from './NotFoundPage.js';
 import { register, login, verificationToken } from '../utils/Auth';
 import authorizationSuccessfulImage from '../images/good.svg';
 import authorizationFailedImage from '../images/bad.svg'
+import { AutorizationForm } from './AutorizationForm.js';
 
 function App() {
   const [cards, setCards] = React.useState([]);
@@ -43,32 +44,42 @@ function App() {
     '_id': '',
     'cohort': ''
   });
-
-//проверить токен при загрузке сайта
+  //проверить токен при загрузке сайта
   React.useEffect(() => {
     checkToken();
   }, []);
-//загрузка карточек на страницу
+  // console.log(loggedIn)
+  // React.useEffect(() => {
+  //   const token = localStorage.getItem('token');
+  //   { token ? setLoggedIn(true) : setLoggedIn(false) }
+  // }, [])
+  const token = localStorage.getItem('token');// Не знаю почему, но даже если LoggedIn true, все равно информация не подгружалась после перезагрузке страницы в браузере, а если перезагрузить путем сохранения в vsCode, то всё нормально
+  //загрузка карточек на страницу
   React.useEffect(() => {
-    api.getCards()
-      .then((dataCard) => {
-        setCards(dataCard);
-      })
-      .catch((err) => {
-        console.log(`Ошибка. Не удалось загрузить карточки 😰: ${err}`);
-      });
-  }, []);
-//загрузка инфы о пользователе
+    if (token) {
+      api.getCards()
+        .then((dataCard) => {
+          setCards(dataCard);
+        })
+        .catch((err) => {
+          console.log(`Ошибка. Не удалось загрузить карточки 😰: ${err}`);
+        });
+    }
+  }, [])
+
+  //загрузка инфы о пользователе
   React.useEffect(() => {
-    api.getUserInformation()
-      .then(data => {
-        setCurrentUser(data)
-      })
-      .catch((err) => {
-        console.log(`Ошибка данных😩: ${err}`);
-      })
+    if (token) {
+      api.getUserInformation()
+        .then(data => {
+          setCurrentUser(data)
+        })
+        .catch((err) => {
+          console.log(`Ошибка данных😩: ${err}`);
+        })
+    }
   }, []);
-//попапы открыть
+  //попапы открыть
   const handleOpenAddCardPopup = () => {
     setIsAddCardPopupOpened(true);
   };
@@ -80,17 +91,17 @@ function App() {
   const handleOpenEditAvatarPopup = () => {
     setPopupAvatarOpen(true);
   };
-//доделаю...
+  //доделаю...
   // function handleOpenCardDeletePopup() {
   //   setIsCardDeletePopupOpen(true);
   // };
-//открыть попап с карточкой
+  //открыть попап с карточкой
   function openCard(data) {
     setSelectedCard(data);
     setPhotoOpen(true);
 
   };
-//закрыть все попапы
+  //закрыть все попапы
   const closeAllPopups = () => {
     setSelectedCard('');
     setPhotoOpen(false);
@@ -100,7 +111,7 @@ function App() {
     setIsAddCardPopupOpened(false);
     setInfoTooltipOpen(false)
   };
-//удаление карточки
+  //удаление карточки
   function handleCardDelete(cardId) {
     api.deleteCard(cardId)
       .then(() => {
@@ -108,7 +119,7 @@ function App() {
       })
       .catch(err => { console.log(`Сбой. Не удалось удалить карточку...🥺${err}`) })
   };
-//поставить лайк
+  //поставить лайк
   const handleCardLike = (card) => {
     const isLiked = card.likes.some(i => i._id === currentUser._id);
     api.changeLikeCardStatus(card._id, !isLiked)
@@ -117,7 +128,7 @@ function App() {
       })
       .catch(err => { console.log(`Это провал... Не удалось поставить(удалить) лайк... 🥵${err}`) });
   }
-//новая карточка
+  //новая карточка
   const handleAddPlaceSubmit = (title, link) => {
     api.downloadNewCard({ title, link })
       .then(newCard => {
@@ -126,7 +137,7 @@ function App() {
       })
       .catch(err => { console.log(`Фиаско. Не удалось добавить карточку 🤪 ${err}`) })
   }
-//изменение аватара
+  //изменение аватара
   const sendAvatarToServer = (link) => {
     api.changeAvatar(link)
       .then(link => {
@@ -135,7 +146,7 @@ function App() {
       })
       .catch(err => { console.log(`Ошибка. Аватар не обновлён 🤔: ${err}`) })
   }
-//изменение информации о пользователе
+  //изменение информации о пользователе
   const sendProfileToServer = (textData) => {
     api.changeUserInfo(textData)
       .then(text => {
@@ -144,7 +155,7 @@ function App() {
       })
       .catch(err => { console.log(`Ошибка. Информация о пользователе не обновлена 😟: ${err}`) })
   }
-//регистрация
+  //регистрация
   const handleRegister = (email, password) => {
     register(email, password)
       .then(() => {
@@ -165,7 +176,7 @@ function App() {
         setInfoTooltipOpen(true);
       })
   };
-//проверка логина
+  //проверка логина
   const handleLogin = (email, password) => {
     login(email, password)
       .then(data => {
@@ -178,21 +189,20 @@ function App() {
         console.log(`Ошибка входа. Введите корректный логин или пройдите регистрацию. 😟: ${err}`);
       })
   }
-//проверка токена
+  //проверка токена
   const checkToken = () => {
-    const token = localStorage.getItem('token');
     if (token) {
       verificationToken(token)
-          .then((res) => {
-            if (res) {
-              setUserEmail(res.data.email);
-              setLoggedIn(true);
-              navigate('/me', { replace: true });
-            }
-          })
-          .catch((err) => {
-            console.log(`Ошибка входа. Авторизуйтесь или пройдите регистрацию. 😟: ${err}`);
-          });
+        .then((res) => {
+          if (res) {
+            setUserEmail(res.data.email);
+            setLoggedIn(true);
+            navigate('/me', { replace: true });
+          }
+        })
+        .catch((err) => {
+          console.log(`Ошибка входа. Авторизуйтесь или пройдите регистрацию. 😟: ${err}`);
+        });
     }
   }
   //выход из аккаунта
@@ -205,10 +215,8 @@ function App() {
   return (
     <>
       <CurrentUserContext.Provider value={currentUser}>
-        <Header loggedIn={loggedIn} email={userEmail} handleLogOutAccount={handleLogOutAccount}/>
+        <Header loggedIn={loggedIn} email={userEmail} handleLogOutAccount={handleLogOutAccount} />
         <Routes>
-          <Route path="*" element={<NotFoundPage />} />
-          <Route path="/" element={loggedIn ? <Navigate to="/me" replace /> : <Navigate to="/sign-in" replace />} />
           <Route path="/me" element={
             <ProtectedRouteElement
               element={Main}
@@ -222,14 +230,15 @@ function App() {
               cards={cards}
               loggedIn={loggedIn}
             />} />
-          <Route path="/sign-up" element={<Register handleRegister={handleRegister} />} />
-          <Route path="/sign-in" element={<Login handleLogin={handleLogin} />} />
+          <Route path="/sign-up" element={<Register handleRegister={handleRegister} AutorizationForm={AutorizationForm} />} />
+          <Route path="/sign-in" element={<Login handleLogin={handleLogin} AutorizationForm={AutorizationForm} />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
         <InfoTooltip onClose={closeAllPopups} text={InfoTooltipData.text} image={InfoTooltipData.image} visible={InfoTooltipOpen} />
         <ImagePopup popupOpen={photoOpen} data={selectedCard} onClose={closeAllPopups} />
-        <EditAvatarPopup open={popupAvatarOpen} close={closeAllPopups} saveLinkOnServer={sendAvatarToServer} />
-        <EditProfilePopup open={isProfilePopupOpen} close={closeAllPopups} saveTextOnServer={sendProfileToServer} />
-        <AddPlacePopup open={isAddCardPopupOpened} close={closeAllPopups} submitCard={handleAddPlaceSubmit} />
+        <EditAvatarPopup popupOpen={popupAvatarOpen} popupClose={closeAllPopups} saveLinkOnServer={sendAvatarToServer} />
+        <EditProfilePopup popupOpen={isProfilePopupOpen} popupClose={closeAllPopups} saveTextOnServer={sendProfileToServer} />
+        <AddPlacePopup popupOpen={isAddCardPopupOpened} popupClose={closeAllPopups} cardSubmit={handleAddPlaceSubmit} />
 
         <PopupWithForm
           open={isCardDeletePopupOpen}

@@ -2,7 +2,7 @@ import React from "react";
 import { PopupWithForm } from "./PopupWithForm";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
-export function EditProfilePopup({ open, close, saveTextOnServer }) {
+export function EditProfilePopup({ popupOpen, popupClose, saveTextOnServer }) {
     const context = React.useContext(CurrentUserContext);
 
     const [userName, setUserName] = React.useState('');
@@ -28,8 +28,8 @@ export function EditProfilePopup({ open, close, saveTextOnServer }) {
 
     return (
         <PopupWithForm
-            open={open}
-            onClose={close}
+            popupOpen={popupOpen}
+            onClose={popupClose}
             onSubmit={submitProfile}
             title={'Редактировать профиль'}
             submit={'Сохранить'}

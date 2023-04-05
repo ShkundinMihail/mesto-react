@@ -1,25 +1,25 @@
 import React from "react";
 import { PopupWithForm } from "./PopupWithForm";
 
-export function AddPlacePopup({ open, close, submitCard }) {
+export function AddPlacePopup({ popupOpen, popupClose, cardSubmit }) {
     const titlePlace = React.useRef();
     const linkPlace = React.useRef();
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        submitCard(titlePlace.current.value, linkPlace.current.value)
+        cardSubmit(titlePlace.current.value, linkPlace.current.value)
     };
 
     React.useEffect(() => {
         titlePlace.current.value = ''
         linkPlace.current.value = ''
     },
-        [open])
+        [popupOpen])
 
     return (
         <PopupWithForm
-            open={open}
-            onClose={close}
+            popupOpen={popupOpen}
+            onClose={popupClose}
             onSubmit={handleSubmit}
             title={'Новое место'}
             submit={'Создать'}

@@ -1,7 +1,7 @@
 import React from "react";
 import { PopupWithForm } from "./PopupWithForm";
 
-export function EditAvatarPopup({ saveLinkOnServer, open, close }) {
+export function EditAvatarPopup({ saveLinkOnServer, popupOpen, popupClose }) {
     const linkToAvatar = React.useRef();
     const submitAvatar = (e) => {
         e.preventDefault();
@@ -10,11 +10,11 @@ export function EditAvatarPopup({ saveLinkOnServer, open, close }) {
 
     React.useEffect(() => {
         linkToAvatar.current.value = ''
-    }, [open])
+    }, [popupOpen])
     return (
         <PopupWithForm
-            open={open}
-            onClose={close}
+            popupOpen={popupOpen}
+            onClose={popupClose}
             onSubmit={submitAvatar}
             title={'Обновить аватар'}
             submit={'Сохранить'}

@@ -10,9 +10,7 @@ export const register = (email, password) => {
         body: JSON.stringify({ password, email })
     })
         .then(res => {
-            return res.ok
-                ? res.json()
-                : Promise.reject(`Ошибка: ${res.status}`);
+            return handleResponse(res);
         })
 };
 
@@ -27,9 +25,7 @@ export const login = (email, password) => {
     })
         .then(res => {
             //email: advancedCorves12345678@gmail.com, password: 11111111
-            return res.ok
-                ? res.json()
-                : Promise.reject(`Ошибка: ${res.status}`);
+            return handleResponse(res);
         })
 }
 
@@ -41,9 +37,13 @@ export const verificationToken = (token) => {
             Authorization: `Bearer ${token}`,
         },
     })
-    .then(res => {
-        return res.ok
-            ? res.json()
-            : Promise.reject(`Ошибка: ${res.status}`);
-    });
+        .then(res => {
+            return handleResponse(res);
+        });
 };
+
+const handleResponse = (res) => {
+    return res.ok
+        ? res.json()
+        : Promise.reject(`Ошибка: ${res.status}`);
+}
