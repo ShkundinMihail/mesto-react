@@ -48,15 +48,10 @@ function App() {
   React.useEffect(() => {
     checkToken();
   }, []);
-  // console.log(loggedIn)
-  // React.useEffect(() => {
-  //   const token = localStorage.getItem('token');
-  //   { token ? setLoggedIn(true) : setLoggedIn(false) }
-  // }, [])
-  const token = localStorage.getItem('token');// Не знаю почему, но даже если LoggedIn true, все равно информация не подгружалась после перезагрузке страницы в браузере, а если перезагрузить путем сохранения в vsCode, то всё нормально
+
   //загрузка карточек на страницу
   React.useEffect(() => {
-    if (token) {
+    if (loggedIn) {
       api.getCards()
         .then((dataCard) => {
           setCards(dataCard);
@@ -65,11 +60,11 @@ function App() {
           console.log(`Ошибка. Не удалось загрузить карточки 😰: ${err}`);
         });
     }
-  }, [])
+  }, [loggedIn])// c useEffect у меня дружба сразу не заладилась 😁
 
   //загрузка инфы о пользователе
   React.useEffect(() => {
-    if (token) {
+    if (loggedIn) {
       api.getUserInformation()
         .then(data => {
           setCurrentUser(data)
@@ -78,7 +73,7 @@ function App() {
           console.log(`Ошибка данных😩: ${err}`);
         })
     }
-  }, []);
+  }, [loggedIn]);
   //попапы открыть
   const handleOpenAddCardPopup = () => {
     setIsAddCardPopupOpened(true);
@@ -191,6 +186,7 @@ function App() {
   }
   //проверка токена
   const checkToken = () => {
+    const token = localStorage.getItem('token');
     if (token) {
       verificationToken(token)
         .then((res) => {
